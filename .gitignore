@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.Python
+*.so
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*~
+
+# Data files (large)
+*.pdb
+*.cif
+*.fasta
+*.db
+*.db.*
+data/raw/
+data/clusters/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.log
+
+# Large outputs
+*.pkl
+*.h5
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keep some files despite rules above
+!data/.gitkeep
+!results/figures/*.png
+!results/tables/*.csv

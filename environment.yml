@@ -1,0 +1,23 @@
+name: domain-finder
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - python=3.10
+  - numpy=1.24
+  - scipy=1.11
+  - pandas=2.0
+  - scikit-learn=1.4
+  - biopython=1.84
+  - networkx=3.2
+  - python-louvain=0.16
+  - mmseqs2=15.6f452
+  - matplotlib=3.7
+  - seaborn=0.12
+  - jupyter=1.0
+  - notebook=7.0
+  - pytest=7.4
+  - tqdm=4.66
+  - requests=2.31
