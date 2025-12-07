@@ -5,7 +5,7 @@ Download PDB files for selected proteins
 import pandas as pd
 from Bio.PDB import PDBList
 
-def download_selected_structures(csv_file, output_dir="../data/selected_structures"):
+def download_selected_structures(csv_file, output_dir="data/selected_structures"):
     """
     Download PDB structures for selected proteins
     """
@@ -32,4 +32,4 @@ def download_selected_structures(csv_file, output_dir="../data/selected_structur
 
 
 if __name__ == "__main__":
-    download_selected_structures("../data/pdb_clustering/selected_proteins_mmseqs2.csv")
+    download_selected_structures("data/pdb_clustering/selected_proteins_mmseqs2.csv")

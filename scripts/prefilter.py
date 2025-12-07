@@ -193,9 +193,9 @@ def filter_pdb_sequences(input_fasta, output_fasta, metadata_csv):
         print(f"  {reason}: {count}")
 
 if __name__ == "__main__":
-    input_file = "../data/pdb_clustering/pdb_seqres.txt"
-    output_file = "../data/pdb_clustering/pdb_seqres_filtered.fasta"
-    metadata_file = "../data/pdb_clustering/pdb_metadata.csv"
+    input_file = "data/pdb_clustering/pdb_seqres.txt"
+    output_file = "data/pdb_clustering/pdb_seqres_filtered.fasta"
+    metadata_file = "data/pdb_clustering/pdb_metadata.csv"
     
     filter_pdb_sequences(input_file, output_file, metadata_file)
 
