@@ -187,6 +187,79 @@ Run after downloading structures to verify parsing and prepare for downstream st
 ## Scripts
 
 ---
+### New and Updated Scripts (2025)
+
+#### `scripts/louvain_clustering.py`
+**Purpose:** Perform community detection (clustering) on protein structure graphs using the Louvain algorithm.
+**How it works:**
+1. Loads graph representations of protein structures (e.g., from distance matrices or graph files).
+2. Applies the Louvain method to detect communities or clusters within each graph.
+3. Outputs cluster assignments for each residue or node.
+**Usage:**
+```bash
+python scripts/louvain_clustering.py
+```
+**Output:**
+- Cluster/community assignments for each protein (format depends on implementation, e.g., `.csv`, `.json`).
+
+#### `scripts/visualize_domains.py`
+**Purpose:** Visualize protein domains, clusters, or structural features for selected proteins.
+**How it works:**
+1. Loads structure, domain, or clustering data for selected proteins.
+2. Generates visualizations (e.g., domain architectures, cluster colorings, or 3D structure plots).
+3. Saves figures or interactive plots for analysis and presentation.
+**Usage:**
+```bash
+python scripts/visualize_domains.py
+```
+**Output:**
+- Figures or plots (e.g., `.png`, `.pdf`, or interactive HTML) in a results or figures directory.
+
+#### `scripts/distance_matrix.py`
+**Purpose:** Compute and save C-alpha (CA) distance matrices for each selected protein structure.
+**How it works:**
+1. Loads the list of selected proteins from `selected_proteins_mmseqs2.csv`.
+2. For each protein, loads the corresponding PDB structure using `ProteinStructureParser`.
+3. Computes the pairwise distance matrix between all CA atoms (using NumPy).
+4. Saves each distance matrix as a `.npy` file (NumPy binary) in `data/distance_matrices/`.
+**Usage:**
+```bash
+python scripts/distance_matrix.py
+```
+**Output:**
+- `data/distance_matrices/<pdb_id>_<chain_id>.npy` for each protein chain.
+
+#### `scripts/graph_builder.py`
+**Purpose:** (If implemented) Build graph representations of protein structures, typically from distance matrices or CA coordinates.
+**How it works:**
+1. Loads distance matrices or coordinates for selected proteins.
+2. Constructs graphs (e.g., nodes = residues, edges = spatial proximity or other criteria).
+3. Saves graph data for downstream analysis or machine learning.
+**Usage:**
+```bash
+python scripts/graph_builder.py
+```
+**Output:**
+- Graph files (format depends on implementation, e.g., `.gpickle`, `.json`, or `.csv`).
+
+---
+### Data and Results Folders
+
+- `data/selected_structures/`: Contains downloaded PDB `.ent` files for selected proteins (used by structure parsing and distance matrix scripts).
+- `data/results/`: Stores results such as `parsing_results.csv` and any generated figures.
+- `data/processed/`: For processed or intermediate CSVs, e.g., `selected_proteins_mmseqs2.csv`.
+- `data/distance_matrices/`: (If used) Contains distance matrices for each protein chain.
+
+---
+### Workflow Extension
+
+After downloading and parsing structures, you can now:
+1. Compute distance matrices for all selected proteins using `scripts/distance_matrix.py`.
+2. (Optionally) Build graph representations for further structural or network analysis using `scripts/graph_builder.py`.
+
+These steps enable downstream structural bioinformatics, clustering, or machine learning tasks on your curated protein set.
+
+---
 ### Step-by-Step Script Reference
 
 #### 1. Download PDB sequences

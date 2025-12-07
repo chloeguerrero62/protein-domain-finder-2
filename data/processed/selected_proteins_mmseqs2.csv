@@ -1,0 +1,137 @@
+pdb_chain,pdb_id,chain,length,n_domains,domain_ids,domain_bin,length_bin
+6p5a_B,6p5a,B,135,1,['PF12596'],1,small
+6vme_E,6vme,E,122,1,['PF03997'],1,small
+9och_D,9och,D,239,1,['PF17616'],1,small
+8v14_A,8v14,A,168,1,['PF00057'],1,small
+2yzq_A,2yzq,A,282,1,['PF00571'],1,small
+3nyw_A,3nyw,A,250,1,['PF00106'],1,small
+1npy_A,1npy,A,271,1,['PF08501'],1,small
+6zxd_z,6zxd,z,568,1,['PF01163'],1,medium
+7y9x_B,7y9x,B,751,1,['PF12770'],1,medium
+8w75_A,8w75,A,415,1,['PF01266'],1,medium
+3es5_A,3es5,A,420,1,['PF22408'],1,medium
+5ta6_A,5ta6,A,358,1,['PF00069'],1,medium
+3hqt_A,3hqt,A,409,1,['PF00155'],1,medium
+4fye_A,4fye,A,761,1,['PF20988'],1,medium
+9upa_B,9upa,B,353,1,['PF00331'],1,medium
+9lvk_E,9lvk,E,421,1,['PF00400'],1,medium
+1eg2_A,1eg2,A,319,1,['PF01555'],1,medium
+8uti_z,8uti,z,588,1,['PF12756'],1,medium
+4us5_A,4us5,A,338,1,['PF00296'],1,medium
+9sob_4,9sob,4,447,1,['PF00400'],1,medium
+9sob_O,9sob,O,326,1,['PF00400'],1,medium
+6yt5_G,6yt5,G,1340,1,['PF01464'],1,large
+9dou_A,9dou,A,1390,1,['PF00078'],1,large
+8u5y_B,8u5y,B,855,1,['PF17659'],1,large
+7eby_A,7eby,A,824,1,['PF01804'],1,large
+7e8s_J,7e8s,J,1289,1,['PF08626'],1,large
+9hnw_A,9hnw,A,813,1,['PF00443'],1,large
+5mtz_A,5mtz,A,874,1,['PF13691'],1,large
+7bm8_A,7bm8,A,257,2,"['PF17762', 'PF02195']",2,small
+2nsf_A,2nsf,A,261,2,"['PF07398', 'PF11716']",2,small
+3pjs_K,3pjs,K,166,2,"['PF07885', 'PF00520']",2,small
+4iqi_B,4iqi,B,290,2,"['PF14819', 'PF14489']",2,small
+7jil_V,7jil,V,203,2,"['PF14693', 'PF01386']",2,small
+8s05_C,8s05,C,223,2,"['PF13240', 'PF00498']",2,small
+1yux_A,1yux,A,202,2,"['PF02915', 'PF21349']",2,small
+3npg_A,3npg,A,249,2,"['PF04016', 'PF13938']",2,small
+5jef_A,5jef,A,236,2,"['PF00672', 'PF13675']",2,small
+3h0d_A,3h0d,A,155,2,"['PF05848', 'PF17727']",2,small
+2yeq_A,2yeq,A,527,2,"['PF09423', 'PF16655']",2,medium
+6kod_D,6kod,D,448,2,"['PF02852', 'PF00070']",2,medium
+8xat_A,8xat,A,301,2,"['PF00249', 'PF00072']",2,medium
+7bzc_A,7bzc,A,605,2,"['PF01397', 'PF03936']",2,medium
+3mzk_B,3mzk,B,441,2,"['PF12932', 'PF12931']",2,medium
+4h7u_A,4h7u,A,602,2,"['PF00732', 'PF05199']",2,medium
+8wy1_A,8wy1,A,596,2,"['PF10091', 'PF11329']",2,medium
+6fq3_A,6fq3,A,409,2,"['PF01436', 'PF00630']",2,medium
+9b6c_A,9b6c,A,579,2,"['PF00733', 'PF13537']",2,medium
+6dbi_D,6dbi,D,533,2,"['PF03089', 'PF13341']",2,medium
+1y9a_A,1y9a,A,360,2,"['PF08240', 'PF00107']",2,medium
+3euj_A,3euj,A,483,2,"['PF13558', 'PF04310']",2,medium
+5msx_A,5msx,A,459,2,"['PF00754', 'PF04616']",2,medium
+4i14_A,4i14,A,425,2,"['PF00925', 'PF00926']",2,medium
+8bxg_A,8bxg,A,561,2,"['PF02254', 'PF00999']",2,medium
+3n05_A,3n05,A,590,2,"['PF02540', 'PF00795']",2,medium
+8wa0_J,8wa0,J,507,2,"['PF09273', 'PF00856']",2,medium
+5ecu_A,5ecu,A,555,2,"['PF00150', 'PF03424']",2,medium
+9gvk_E,9gvk,E,414,2,"['PF12704', 'PF02687']",2,medium
+5z6p_A,5z6p,A,765,2,"['PF02449', 'PF17992']",2,medium
+7cuh_A,7cuh,A,339,2,"['PF16686', 'PF02765']",2,medium
+7y8r_L,7y8r,L,1835,2,"['PF01388', 'PF02257']",2,large
+8iyl_H,8iyl,H,853,2,"['PF06791', 'PF09718']",2,large
+6zu9_q,6zu9,q,812,2,"['PF05470', 'PF01399']",2,large
+8xfb_A,8xfb,A,847,2,"['PF14647', 'PF14648']",2,large
+9h73_B,9h73,B,948,2,"['PF00931', 'PF13855']",2,large
+6r4l_A,6r4l,A,1198,2,"['PF16414', 'PF02460']",2,large
+7w5b_V,7w5b,V,908,2,"['PF02847', 'PF02854']",2,large
+7wui_R,7wui,R,1149,2,"['PF01825', 'PF00002']",2,large
+8bpo_s2,8bpo,s2,1411,2,"['PF12874', 'PF16501']",2,large
+8xft_C,8xft,C,936,2,"['PF18212', 'PF17123']",2,large
+3n0r_A,3n0r,A,286,3,"['PF22029', 'PF22233', 'PF00072']",3,small
+1kyq_C,1kyq,C,274,3,"['PF13241', 'PF14824', 'PF14823']",3,small
+6skg_Bp,6skg,Bp,236,3,"['PF01172', 'PF20268', 'PF09377']",3,small
+3a42_A,3a42,A,295,3,"['PF21025', 'PF01149', 'PF06831']",3,small
+4c16_A,4c16,A,280,3,"['PF00008', 'PF00084', 'PF00059']",3,small
+4hg0_A,4hg0,A,292,3,"['PF00571', 'PF21917', 'PF03471']",3,small
+3prb_A,3prb,A,231,3,"['PF18046', 'PF22199', 'PF00254']",3,small
+7bhq_A,7bhq,A,232,3,"['PF13861', 'PF03963', 'PF13860']",3,small
+4q2w_A,4q2w,A,290,3,"['PF17890', 'PF01832', 'PF18342']",3,small
+3mpx_A,3mpx,A,434,3,"['PF01363', 'PF00169', 'PF00621']",3,medium
+3nzq_A,3nzq,A,666,3,"['PF17810', 'PF17944', 'PF02784']",3,medium
+5y7g_A,5y7g,A,580,3,"['PF18081', 'PF21315', 'PF08774']",3,medium
+3qq5_A,3qq5,A,423,3,"['PF01926', 'PF18133', 'PF18128']",3,medium
+6e5u_C,6e5u,C,508,3,"['PF09162', 'PF22602', 'PF03943']",3,medium
+8q61_A,8q61,A,483,3,"['PF00433', 'PF00069', 'PF00169']",3,medium
+4qt8_B,4qt8,B,669,3,"['PF01437', 'PF01833', 'PF01403']",3,medium
+8em2_A,8em2,A,791,3,"['PF01182', 'PF02781', 'PF00479']",3,medium
+5n1t_A,5n1t,A,429,3,"['PF07992', 'PF21706', 'PF09242']",3,medium
+5vsu_A,5vsu,A,452,3,"['PF16842', 'PF00076', 'PF05391']",3,medium
+6ahd_J,6ahd,J,683,3,"['PF08572', 'PF06544', 'PF01480']",3,medium
+4v2x_A,4v2x,A,597,3,"['PF03442', 'PF00150', 'PF18448']",3,medium
+3d45_A,3d45,A,507,3,"['PF04857', 'PF01424', 'PF08675']",3,medium
+6ef3_H,6ef3,H,467,3,"['PF21236', 'PF17862', 'PF00004']",3,medium
+4yzw_A,4yzw,A,720,3,"['PF03722', 'PF00372', 'PF03723']",3,medium
+9ynw_D,9ynw,D,767,3,"['PF00400', 'PF04494', 'PF08513']",3,medium
+9kbf_C,9kbf,C,436,3,"['PF09346', 'PF00646', 'PF04379']",3,medium
+8p53_C,8p53,C,492,3,"['PF02954', 'PF06490', 'PF00158']",3,medium
+8ftk_A,8ftk,A,1993,3,"['PF12726', 'PF13086', 'PF13087']",3,large
+5anc_K,5anc,K,1120,3,"['PF00009', 'PF00679', 'PF14492']",3,large
+8r7l_B,8r7l,B,1593,3,"['PF11262', 'PF11732', 'PF16134']",3,large
+8h3v_B,8h3v,B,1350,3,"['PF04998', 'PF05000', 'PF04983']",3,large
+7wrg_A,7wrg,A,960,3,"['PF12423', 'PF00225', 'PF00498']",3,large
+5o7x_M,5o7x,M,894,3,"['PF20639', 'PF20640', 'PF10214']",3,large
+9bcl_B,9bcl,B,1040,3,"['PF00211', 'PF01094', 'PF07714']",3,large
+9np6_A,9np6,A,1046,3,"['PF00580', 'PF13361', 'PF12705']",3,large
+6xja_P,6xja,P,1299,3,"['PF07581', 'PF07580', 'PF05342']",3,large
+7dlu_A,7dlu,A,278,4,"['PF21082', 'PF05552', 'PF21088', 'PF00924']",4+,small
+3go5_A,3go5,A,285,4,"['PF17783', 'PF21543', 'PF21191', 'PF13509']",4+,small
+8os5_A,8os5,A,295,4,"['PF00008', 'PF00040', 'PF00051', 'PF00039']",4+,small
+4jcv_A,4jcv,A,241,4,"['PF21176', 'PF21175', 'PF01751', 'PF02132']",4+,small
+6zxj_D,6zxj,D,759,5,"['PF07691', 'PF20835', 'PF17475', 'PF17476', 'PF03495']",4+,medium
+3l4g_O,3l4g,O,508,4,"['PF18553', 'PF01409', 'PF18554', 'PF18552']",4+,medium
+9c49_A,9c49,A,520,4,"['PF08016', 'PF10409', 'PF00520', 'PF22785']",4+,medium
+3af5_A,3af5,A,651,4,"['PF16661', 'PF10996', 'PF17214', 'PF07521']",4+,medium
+5mg3_D,5mg3,D,622,5,"['PF22599', 'PF13721', 'PF02355', 'PF07549', 'PF21760']",4+,medium
+5mx0_A,5mx0,A,362,4,"['PF13855', 'PF00560', 'PF13516', 'PF01462']",4+,medium
+6pa7_N,6pa7,N,770,4,"['PF21255', 'PF00855', 'PF17980', 'PF00145']",4+,medium
+3a21_A,3a21,A,614,4,"['PF22704', 'PF17801', 'PF16499', 'PF00652']",4+,medium
+4c2e_A,4c2e,A,446,4,"['PF22694', 'PF13180', 'PF03572', 'PF01471']",4+,medium
+5mv8_A,5mv8,A,527,4,"['PF00373', 'PF02174', 'PF21989', 'PF00784']",4+,medium
+6f44_O,6f44,O,654,4,"['PF22536', 'PF20912', 'PF08221', 'PF05645']",4+,medium
+4fcy_A,4fcy,A,529,4,"['PF09299', 'PF02914', 'PF02316', 'PF09039']",4+,medium
+2zj2_A,2zj2,A,720,4,"['PF00271', 'PF00633', 'PF21280', 'PF00270']",4+,medium
+6t58_A,6t58,A,553,4,"['PF18521', 'PF01023', 'PF00191', 'PF08563']",4+,medium
+1tuo_A,1tuo,A,464,4,"['PF00408', 'PF02879', 'PF02880', 'PF02878']",4+,medium
+2au3_A,2au3,A,407,4,"['PF01807', 'PF22410', 'PF08275', 'PF01751']",4+,medium
+6v4x_H,6v4x,H,684,4,"['PF11718', 'PF00753', 'PF10996', 'PF07521']",4+,medium
+5iv5_A,5iv5,A,660,5,"['PF21379', 'PF21387', 'PF21515', 'PF21871', 'PF21472']",4+,medium
+8ide_A,8ide,A,1008,4,"['PF00899', 'PF01300', 'PF00814', 'PF03481']",4+,large
+7fsf_A,7fsf,A,1104,4,"['PF17915', 'PF01751', 'PF01131', 'PF00270']",4+,large
+7yq8_A,7yq8,A,1626,6,"['PF00521', 'PF02518', 'PF00204', 'PF01751', 'PF08070', 'PF16898']",4+,large
+8a40_A,8a40,A,1984,8,"['PF05000', 'PF04990', 'PF04992', 'PF00623', 'PF04983', 'PF04997', 'PF04998', 'PF05001']",4+,large
+7ux1_F,7ux1,F,1120,5,"['PF12795', 'PF21088', 'PF12794', 'PF21082', 'PF00924']",4+,large
+4gnk_B,4gnk,B,1235,6,"['PF08703', 'PF22631', 'PF17787', 'PF00387', 'PF00168', 'PF00388']",4+,large
+9n72_NH,9n72,NH,1237,6,"['PF17404', 'PF17407', 'PF17406', 'PF03813', 'PF17405', 'PF17403']",4+,large
+7mjr_A,7mjr,A,937,4,"['PF17475', 'PF17476', 'PF07691', 'PF03495']",4+,large
+5n0b_A,5n0b,A,1335,4,"['PF07953', 'PF01742', 'PF07952', 'PF07951']",4+,large
