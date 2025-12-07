@@ -26,7 +26,6 @@ python scripts/prefilter.py
 - `data/pdb_clustering/pdb_seqres_filtered.fasta` - Filtered sequences
 - `data/pdb_clustering/pdb_metadata.csv` - Metadata (resolution, experimental method, release date)
 
-**Expected runtime:** ~30 minutes (API calls are parallelized)
 
 ---
 
@@ -67,7 +66,6 @@ cd ../..
 - `pdb_representatives_30.fasta` - One representative per cluster
 - `pdb_clusters_30` (binary) - MMseqs2 clustering results
 
-**Expected runtime:** ~2-4 hours (depending on CPU)
 
 ---
 
@@ -95,7 +93,6 @@ python scripts/cluster_protein_selection.py
   - `domain_bin` - Domain count category (1/2/3/4+)
   - `length_bin` - Size category (small/medium/large)
 
-**Expected runtime:** ~15-20 minutes (API rate limiting)
 
 ---
 
@@ -114,7 +111,6 @@ python scripts/download_selected_pdbs.py
 - `data/selected_structures/pdb<ID>.ent` - PDB structure files (one per protein)
 - Total size: ~50 MB (not tracked in Git)
 
-**Expected runtime:** ~5-10 minutes (depends on network speed)
 
 ---
 
@@ -137,7 +133,6 @@ python scripts/distance_matrix.py
 - `data/distance_matrices/<pdb>_<chain>_distmat.npy` - Distance matrices (N×N, where N = number of residues)
 - `data/results/distance_matrix_results.csv` - Processing log with success/failure status
 
-**Expected runtime:** ~1-2 minutes
 
 **Example:**
 ```python
@@ -166,7 +161,6 @@ python scripts/graph_builder.py
 **Outputs:**
 - `data/graphs/*_graph.pkl` - NetworkX graph objects (pickle format)
 
-**Expected runtime:** ~1 minute
 
 **Graph properties:**
 - Nodes: Protein residues (numbered 0 to N-1)
@@ -200,7 +194,6 @@ python scripts/louvain_clustering.py
   - `modularity` - Graph modularity score (quality metric)
   - `cluster_sizes` - Size of each domain
 
-**Expected runtime:** ~30 seconds
 
 **Key parameters:**
 - `resolution=1.0` - Controls granularity (higher = more clusters)
@@ -224,7 +217,6 @@ python scripts/two_stage_pipeline.py
 **Outputs:**
 - `data/results/two_stage_silhouette.csv` - Results with estimated domain counts
 
-**Expected runtime:** ~5-10 minutes
 
 **How it works:**
 ```
@@ -265,7 +257,6 @@ python scripts/compare_all_methods.py
 - `data/results/method_summary.csv` - Aggregated statistics by method
   - Columns: `method`, `exact_match` (count), `absolute_error` (mean), `n_predicted` (mean)
 
-**Expected runtime:** ~10-15 minutes
 
 **Example output:**
 ```
@@ -307,7 +298,6 @@ python scripts/visualize_domains.py
 **Outputs:**
 - `data/visualizations/<pdb>_<chain>_domains.png` - Visualization plots
 
-**Expected runtime:** ~10 seconds (processes first 5 proteins by default)
 
 ---
 
@@ -322,7 +312,6 @@ python scripts/compare_clustering_methods.py
 - Tests all methods on 4 representative proteins (1, 2, 3, 4 domains)
 - Quick sanity check before running full analysis
 
-**Expected runtime:** ~5 seconds
 
 **Example output:**
 ```
