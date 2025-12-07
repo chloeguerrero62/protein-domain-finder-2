@@ -50,3 +50,34 @@ Thumbs.db
 !data/.gitkeep
 !results/figures/*.png
 !results/tables/*.csv
+data/pdb_clustering/*.txt
+data/pdb_clustering/*.fasta
+data/pdb_clustering/pdb_metadata.csv
+!data/pdb_clustering/selected_proteins_mmseqs2.csv
+
+# Large data files - DO NOT COMMIT
+data/distance_matrices/*.npy
+data/graphs/*.pkl
+data/graphs/*.gpickle
+data/selected_structures/*.ent
+data/selected_structures/*.pdb
+data/clusters/*.npy
+data/clusters/*.pkl
+
+# Keep small metadata files
+!data/**/*.csv
+!data/**/*.txt
+
+# PDB clustering intermediate files
+data/pdb_clustering/pdb_seqres.txt
+data/pdb_clustering/pdb_seqres.txt.gz
+data/pdb_clustering/*.fasta
+data/pdb_clustering/*.db
+data/pdb_clustering/tmp/
+
+# Results - keep small summaries, ignore large files
+data/results/*.npy
+
+# Visualizations - usually fine to commit
+# data/visualizations/*.png
+
