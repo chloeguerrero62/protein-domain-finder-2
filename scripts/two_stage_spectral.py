@@ -391,20 +391,28 @@ def process_dataset(csv_file, output_dir='data/results',
     
     # Compute metrics if ground truth available
     if 'n_true' in results_df.columns:
-        successful = results_df[results_df['success']].copy()
+        # Add metric columns to all rows (will be NaN for failed)
+        results_df['exact_match'] = None
+        results_df['absolute_error'] = None
+        results_df['relative_error'] = None
         
-        successful['exact_match'] = (
-            successful['n_domains_estimated'] == successful['n_true']
+        # Compute metrics only for successful rows
+        success_mask = results_df['success'] == True
+        
+        results_df.loc[success_mask, 'exact_match'] = (
+            results_df.loc[success_mask, 'n_domains_estimated'] == 
+            results_df.loc[success_mask, 'n_true']
         ).astype(int)
-        successful['absolute_error'] = np.abs(
-            successful['n_domains_estimated'] - successful['n_true']
-        )
-        successful['relative_error'] = (
-            successful['absolute_error'] / successful['n_true']
+        
+        results_df.loc[success_mask, 'absolute_error'] = np.abs(
+            results_df.loc[success_mask, 'n_domains_estimated'] - 
+            results_df.loc[success_mask, 'n_true']
         )
         
-        # Update results_df
-        results_df.update(successful)
+        results_df.loc[success_mask, 'relative_error'] = (
+            results_df.loc[success_mask, 'absolute_error'] / 
+            results_df.loc[success_mask, 'n_true']
+        )
     
     # Save results
     results_file = output_path / f'two_stage_{estimation_method}.csv'
