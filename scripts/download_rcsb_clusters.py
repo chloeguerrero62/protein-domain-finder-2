@@ -1,20 +1,3 @@
-"""
-Download RCSB Pre-Clustered Sequences at 30% Identity
-
-This script replaces the manual MMseqs2 clustering workflow by directly
-using RCSB's pre-computed sequence clusters at 30% identity.
-
-RCSB provides clustering data at: 
-- 30%, 40%, 50%, 70%, 90%, 95%, 100% sequence identity levels
-- Updates weekly with new PDB releases
-
-Workflow:
-1. Download cluster representatives from RCSB
-2. Apply quality filters (length, resolution)
-3. Sample diverse proteins by Pfam domain annotations
-4. Download PDB structures for selected proteins
-"""
-
 import requests
 import pandas as pd
 import numpy as np
@@ -27,42 +10,14 @@ import json
 from tqdm import tqdm
 
 
-# =============================================================================
-# STEP 1: DOWNLOAD RCSB PRE-CLUSTERED DATA
-# =============================================================================
-
 def download_rcsb_clusters(identity_level=30, output_dir='data/pdb_clustering'):
-    """
-    Download RCSB pre-clustered sequences
-    
-    RCSB provides cluster representatives at various identity levels.
-    We use the GraphQL API to get cluster information.
-    
-    Parameters:
-    -----------
-    identity_level : int
-        Sequence identity level (30, 40, 50, 70, 90, 95, 100)
-    output_dir : str
-        Output directory
-    
-    Returns:
-    --------
-    clusters_df : pd.DataFrame
-        DataFrame with cluster information
-    """
-    
-    print("="*70)
-    print(f"DOWNLOADING RCSB PRE-CLUSTERED DATA ({identity_level}% identity)")
-    print("="*70)
-    
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     
     # RCSB provides clustering data via their data API
     # We'll query for all PDB entries and their cluster memberships
     
-    print("\nFetching cluster data from RCSB...")
-    print("Note: This may take several minutes for the full PDB database")
+    print("\nFetching cluster data from RCSB")
     
     # Query RCSB Search API for all entries with clustering info
     query = {
@@ -86,7 +41,6 @@ def download_rcsb_clusters(identity_level=30, output_dir='data/pdb_clustering'):
         "return_type": "entry"
     }
     
-    # Get all PDB IDs first
     search_url = "https://search.rcsb.org/rcsbsearch/v2/query"
     
     try:
@@ -94,19 +48,16 @@ def download_rcsb_clusters(identity_level=30, output_dir='data/pdb_clustering'):
         if response.status_code == 200:
             data = response.json()
             all_pdb_ids = [hit['identifier'] for hit in data.get('result_set', [])]
-            print(f"✓ Found {len(all_pdb_ids)} PDB entries")
+            print(f"Found {len(all_pdb_ids)} PDB entries")
         else:
             print(f"⚠ Search API failed (status {response.status_code})")
-            print("  Falling back to manual sequence download...")
             return download_sequences_fallback(output_dir)
     except Exception as e:
         print(f"⚠ Search API error: {e}")
-        print("  Falling back to manual sequence download...")
         return download_sequences_fallback(output_dir)
     
     # Get entity-level clustering information
     # RCSB clusters at the entity (chain) level
-    print("\nFetching cluster memberships...")
     
     # We'll use the data API to get cluster info in batches
     cluster_data = []
@@ -140,7 +91,7 @@ def download_rcsb_clusters(identity_level=30, output_dir='data/pdb_clustering'):
             except:
                 continue
     
-    print(f"✓ Retrieved clustering data for {len(cluster_data)} entities")
+    print(f"Retrieved clustering data for {len(cluster_data)} entities")
     
     # Convert to DataFrame
     clusters_df = pd.DataFrame(cluster_data)
@@ -149,20 +100,14 @@ def download_rcsb_clusters(identity_level=30, output_dir='data/pdb_clustering'):
     output_file = output_path / f'rcsb_clusters_{identity_level}.csv'
     clusters_df.to_csv(output_file, index=False)
     
-    print(f"✓ Saved cluster data to: {output_file}")
+    print(f"Saved cluster data to: {output_file}")
     
     return clusters_df
 
 
 def download_sequences_fallback(output_dir='data/pdb_clustering'):
-    """
-    Fallback: Download PDB sequence database and parse cluster information
     
-    RCSB provides a sequences file with cluster annotations in the headers.
-    This is more reliable than the API for large-scale downloads.
-    """
-    
-    print("\nUsing fallback method: Downloading PDB sequence file...")
+    print("\nUsing fallback method: Downloading PDB sequence file")
     
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -177,15 +122,14 @@ def download_sequences_fallback(output_dir='data/pdb_clustering'):
     
     if not seq_file.exists():
         print(f"Downloading: {seq_url}")
-        print("This is a ~2 GB file and may take several minutes...")
         
         urllib.request.urlretrieve(seq_url, seq_file)
-        print("✓ Download complete")
+        print("Download complete")
     else:
-        print(f"✓ Using existing file: {seq_file}")
+        print(f"Using existing file: {seq_file}")
     
     # Parse sequences (cluster info is in headers)
-    print("\nParsing sequences...")
+    print("\nParsing sequences")
     
     sequences = []
     
@@ -209,39 +153,20 @@ def download_sequences_fallback(output_dir='data/pdb_clustering'):
                 'description': record.description
             })
     
-    print(f"✓ Parsed {len(sequences)} sequences")
-    
-    # Note: The pdb_seqres file doesn't include explicit cluster IDs
-    # We'll need to use RCSB's clustering API or compute clusters ourselves
-    # For now, save sequences and move to next step
+    print(f"Parsed {len(sequences)} sequences")
+
     
     seq_df = pd.DataFrame(sequences)
     seq_file_out = output_path / 'pdb_sequences.csv'
     seq_df.to_csv(seq_file_out, index=False)
     
-    print(f"✓ Saved sequences to: {seq_file_out}")
+    print(f"Saved sequences to: {seq_file_out}")
     
     return seq_df
 
 
-# =============================================================================
-# STEP 2: GET CLUSTER REPRESENTATIVES
-# =============================================================================
-
 def get_cluster_representatives_api(identity_level=30):
-    """
-    Use RCSB Cluster API to get representatives directly
-    
-    This is the most reliable method - RCSB provides cluster representatives
-    via their sequence cluster API.
-    """
-    
-    print("\n" + "="*70)
-    print("FETCHING CLUSTER REPRESENTATIVES FROM RCSB API")
-    print("="*70)
-    
-    # RCSB cluster API endpoint
-    # Format: clusters-by-entity-{identity}-identity.txt
+
     cluster_url = "https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-30.txt"
 
     print(f"\nDownloading from: {cluster_url}")
@@ -253,11 +178,11 @@ def get_cluster_representatives_api(identity_level=30):
             print(f"⚠ Failed to download (status {response.status_code})")
             return None
         
-        print("✓ Download successful")
+        print("Download successful")
         
         # Parse cluster file
         # Format: Each line is a cluster with representative first
-        # Example: 1A0A_1 1A0B_1 1A0C_1 ...
+        # Example: 1A0A_1 1A0B_1 1A0C_1 
         
         clusters = []
         representatives = []
@@ -278,8 +203,8 @@ def get_cluster_representatives_api(identity_level=30):
                 
                 representatives.append(rep)
         
-        print(f"\n✓ Parsed {len(clusters)} clusters")
-        print(f"✓ {len(representatives)} cluster representatives")
+        print(f"\nParsed {len(clusters)} clusters")
+        print(f"{len(representatives)} cluster representatives")
         
         return clusters, representatives
         
@@ -288,14 +213,10 @@ def get_cluster_representatives_api(identity_level=30):
         return None
 
 
-# =============================================================================
-# STEP 3: FETCH METADATA FOR REPRESENTATIVES
-# =============================================================================
-
 def get_pdb_metadata_batch(pdb_ids):
     """
-    Fetch metadata for multiple PDB entries
-    Returns resolution, experimental method, release date
+    Fetch metadata for multiple PDB entries;
+    returns resolution, experimental method, release date
     """
     
     metadata = {}
@@ -326,7 +247,7 @@ def get_pdb_metadata_batch(pdb_ids):
         
         return pdb_id, None
     
-    print(f"\nFetching metadata for {len(pdb_ids)} PDB entries...")
+    print(f"\nFetching metadata for {len(pdb_ids)} PDB entries")
     
     with ThreadPoolExecutor(max_workers=20) as executor:
         futures = {executor.submit(fetch_single, pdb_id): pdb_id for pdb_id in pdb_ids}
@@ -336,7 +257,7 @@ def get_pdb_metadata_batch(pdb_ids):
             if meta:
                 metadata[pdb_id] = meta
     
-    print(f"✓ Retrieved metadata for {len(metadata)} entries")
+    print(f"Retrieved metadata for {len(metadata)} entries")
     
     return metadata
 
@@ -379,7 +300,7 @@ def get_entity_sequences(entity_ids):
         
         return entity_id, None
     
-    print(f"\nFetching sequences for {len(entity_ids)} entities...")
+    print(f"\nFetching sequences for {len(entity_ids)} entities")
     
     with ThreadPoolExecutor(max_workers=20) as executor:
         futures = {executor.submit(fetch_single, eid): eid for eid in entity_ids}
@@ -389,28 +310,12 @@ def get_entity_sequences(entity_ids):
             if seq_data:
                 sequences[entity_id] = seq_data
     
-    print(f"✓ Retrieved sequences for {len(sequences)} entities")
+    print(f"Retrieved sequences for {len(sequences)} entities")
     
     return sequences
 
 
-# =============================================================================
-# STEP 4: FILTER AND SELECT PROTEINS
-# =============================================================================
-
 def filter_representatives(representatives, sequences, metadata):
-    """
-    Apply quality filters to cluster representatives
-    
-    Filters:
-    1. Length: 50-2000 residues
-    2. Resolution: ≤3.0 Å (for X-ray structures)
-    3. Completeness: ≤5% unknown residues
-    """
-    
-    print("\n" + "="*70)
-    print("APPLYING QUALITY FILTERS")
-    print("="*70)
     
     filtered = []
     
@@ -457,14 +362,11 @@ def filter_representatives(representatives, sequences, metadata):
             'release_date': meta.get('release_date')
         })
     
-    print(f"\n✓ Filtered to {len(filtered)} high-quality proteins")
+    print(f"\nFiltered to {len(filtered)} high-quality proteins")
     
     return pd.DataFrame(filtered)
 
 
-# =============================================================================
-# STEP 5: STRATIFIED SAMPLING WITH PFAM ANNOTATIONS
-# =============================================================================
 
 def get_pfam_domains(pdb_id, chain_id):
     """Query Pfam annotations for a PDB chain"""
@@ -492,24 +394,6 @@ def get_pfam_domains(pdb_id, chain_id):
 
 
 def stratified_selection_with_pfam(filtered_df, target_n=144):
-    """
-    Select diverse proteins stratified by domain count and length
-    
-    Target distribution:
-    - 1 domain: 20%
-    - 2 domains: 30%
-    - 3 domains: 25%
-    - 4+ domains: 25%
-    
-    Within each bin, stratify by size:
-    - Small (50-300): 25%
-    - Medium (300-800): 50%
-    - Large (800-2000): 25%
-    """
-    
-    print("\n" + "="*70)
-    print("FETCHING PFAM DOMAIN ANNOTATIONS")
-    print("="*70)
     
     # Annotate with Pfam domains
     annotated = []
@@ -567,7 +451,7 @@ def stratified_selection_with_pfam(filtered_df, target_n=144):
     
     df = pd.DataFrame(annotated)
     
-    print(f"\n✓ Annotated {len(df)} proteins with Pfam domains")
+    print(f"\nAnnotated {len(df)} proteins with Pfam domains")
     print("\nDomain count distribution:")
     print(df['domain_bin'].value_counts().sort_index())
     print("\nLength distribution:")
@@ -610,9 +494,7 @@ def stratified_selection_with_pfam(filtered_df, target_n=144):
     
     selected_df = pd.DataFrame(selected)
     
-    print(f"\n{'='*70}")
-    print("FINAL SELECTION")
-    print("="*70)
+    print("Final selection summary:")
     print(f"Total proteins: {len(selected_df)}")
     print("\nDomain distribution:")
     print(selected_df['domain_bin'].value_counts().sort_index())
@@ -622,18 +504,8 @@ def stratified_selection_with_pfam(filtered_df, target_n=144):
     return selected_df
 
 
-# =============================================================================
-# MAIN EXECUTION
-# =============================================================================
 
 def main():
-    """
-    Complete workflow using RCSB pre-clustered data
-    """
-    
-    print("="*70)
-    print("PROTEIN SELECTION FROM RCSB PRE-CLUSTERED DATA")
-    print("="*70)
     
     output_dir = Path('data/pdb_clustering')
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -652,7 +524,7 @@ def main():
     cluster_file = output_dir / 'rcsb_clusters_30.json'
     with open(cluster_file, 'w') as f:
         json.dump(clusters, f, indent=2)
-    print(f"\n✓ Saved cluster data to: {cluster_file}")
+    print(f"\nSaved cluster data to: {cluster_file}")
     
     # Step 2: Get sequences for representatives
     sequences = get_entity_sequences(representatives[:1000])  # Limit for testing
@@ -667,7 +539,7 @@ def main():
     # Save filtered representatives
     filtered_file = output_dir / 'filtered_representatives.csv'
     filtered_df.to_csv(filtered_file, index=False)
-    print(f"✓ Saved filtered representatives to: {filtered_file}")
+    print(f"Saved filtered representatives to: {filtered_file}")
     
     # Step 5: Stratified selection with Pfam annotations
     selected_df = stratified_selection_with_pfam(filtered_df, target_n=144)
@@ -675,12 +547,9 @@ def main():
     # Save final selection
     output_file = output_dir / 'selected_proteins_mmseqs2.csv'
     selected_df.to_csv(output_file, index=False)
-    
-    print(f"\n{'='*70}")
-    print("COMPLETE")
-    print("="*70)
-    print(f"✓ Final selection saved to: {output_file}")
-    print(f"✓ Total proteins selected: {len(selected_df)}")
+
+    print(f"Final selection saved to: {output_file}")
+    print(f"Total proteins selected: {len(selected_df)}")
     print(f"\nNext step: Run download_selected_pdbs.py to get structures")
 
 

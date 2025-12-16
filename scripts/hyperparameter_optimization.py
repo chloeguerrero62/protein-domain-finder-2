@@ -1,22 +1,3 @@
-"""
-Hyperparameter Optimization for Two-Stage Spectral Clustering
-
-This script optimizes the Two-Stage Spectral method, which is the only
-viable unsupervised approach (Louvain achieves 0% exact matches).
-
-Parameters optimized:
-1. Domain count estimation method (silhouette/eigengap/consensus)
-2. Similarity kernel sigma scaling factor
-3. Maximum domains search range
-4. k-NN graph parameter k
-
-Strategy:
-- Training set: 30 proteins (stratified by domain count)
-- Test set: Remaining ~114 proteins
-- Grid search over ~80 parameter combinations
-- Optimization metric: Mean Absolute Error (MAE)
-"""
-
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -35,9 +16,7 @@ from src.evaluation.metrics import compute_all_metrics
 
 def estimate_domains_custom(distance_matrix, method='silhouette', 
                             sigma_factor=1.0, max_domains=8):
-    """
-    Custom domain count estimation with configurable parameters
-    """
+
     from sklearn.cluster import SpectralClustering
     from sklearn.metrics import silhouette_score
     
@@ -118,9 +97,6 @@ def estimate_domains_custom(distance_matrix, method='silhouette',
 
 
 def create_stratified_split(df, train_size=30, random_state=42):
-    """
-    Create stratified train/test split by domain count
-    """
     np.random.seed(random_state)
     
     train_proteins = []
@@ -217,12 +193,8 @@ def optimize_two_stage_spectral(train_df, parser):
 
 
 def evaluate_best_params(test_df, parser, best_params):
-    """
-    Evaluate best parameters on held-out test set
-    """
-    print("\n" + "="*70)
-    print("EVALUATING ON TEST SET")
-    print("="*70)
+
+    print("Test Set Evaluation")
     
     errors = []
     exact_matches = []
@@ -271,9 +243,8 @@ def main():
         df['pdb_chain'] = df['pdb_id'] + '_' + df['chain']
     
     # Create stratified split
-    print("="*70)
-    print("HYPERPARAMETER OPTIMIZATION - TWO-STAGE SPECTRAL")
-    print("="*70)
+
+    print("Hyperparameter Optimization - TWO-STAGE SPECTRAL")
     print(f"\nTotal dataset: {len(df)} proteins")
     
     train_df, test_df = create_stratified_split(df, train_size=30, random_state=42)
@@ -288,9 +259,7 @@ def main():
     parser = ProteinStructureParser()
     
     # Optimize on training set
-    print("\n" + "="*70)
-    print("GRID SEARCH ON TRAINING SET")
-    print("="*70 + "\n")
+    print("Training Set Grid Search")
     
     results_df = optimize_two_stage_spectral(train_df, parser)
     
@@ -300,17 +269,13 @@ def main():
     results_df.to_csv(output_dir / 'hyperparameter_grid_search.csv', index=False)
     
     # Print top 10 configurations
-    print("\n" + "="*70)
-    print("TOP 10 PARAMETER CONFIGURATIONS")
-    print("="*70 + "\n")
+    print("Top Ten Parameter Configurations")
     print(results_df.head(10).to_string(index=False))
     
     # Best parameters
     best_params = results_df.iloc[0].to_dict()
     
-    print("\n" + "="*70)
-    print("BEST PARAMETERS (training set)")
-    print("="*70)
+    print("Best Parameters (training set)")
     print(f"Estimation method: {best_params['estimation_method']}")
     print(f"Sigma factor: {best_params['sigma_factor']}")
     print(f"Max domains: {best_params['max_domains']}")
@@ -322,9 +287,7 @@ def main():
     # Evaluate on test set
     test_results, test_metrics_df = evaluate_best_params(test_df, parser, best_params)
     
-    print("\n" + "="*70)
-    print("TEST SET PERFORMANCE")
-    print("="*70)
+    print("Test set performance")
     print(f"Proteins tested: {test_results['n_proteins']}")
     print(f"Mean Absolute Error: {test_results['mean_error']:.2f}")
     print(f"Median Absolute Error: {test_results['median_error']:.2f}")
@@ -352,9 +315,7 @@ def main():
             'test_performance': test_results
         }, f, indent=2)
     
-    print("\n" + "="*70)
-    print("RESULTS SAVED")
-    print("="*70)
+
     print(f"Grid search results: {output_dir / 'hyperparameter_grid_search.csv'}")
     print(f"Test set performance: {output_dir / 'test_set_performance.csv'}")
     print(f"Best parameters: {output_dir / 'best_parameters.json'}")

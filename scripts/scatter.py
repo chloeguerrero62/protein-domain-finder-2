@@ -19,7 +19,6 @@ def analyze_two_stage_performance():
     pct_under = (len(under) / n_total) * 100
     pct_over = (len(over) / n_total) * 100
     
-    print(f"=== SLIDE 2 STATISTICS: SEGMENTATION BREAKDOWN ===")
     print(f"Total Proteins: {n_total}")
     print(f"Perfect Matches: {len(perfect)} ({pct_perfect:.1f}%)")
     print(f"Under-Segmented (Conservative): {len(under)} ({pct_under:.1f}%)")

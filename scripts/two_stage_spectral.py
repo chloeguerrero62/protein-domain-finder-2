@@ -1,13 +1,3 @@
-"""
-Two-Stage Spectral Clustering for Protein Domain Detection (Unsupervised)
-
-This script implements the two-stage approach:
-1. Stage 1: Estimate number of domains using silhouette score
-2. Stage 2: Apply spectral clustering with estimated domain count
-
-This is the best unsupervised method from the comparative study.
-"""
-
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -24,33 +14,9 @@ from src.features.graph_builder import build_knn_graph
 from src.evaluation.metrics import compute_all_metrics
 
 
-# =============================================================================
-# STAGE 1: DOMAIN COUNT ESTIMATION
-# =============================================================================
 
 def estimate_domain_count(distance_matrix, method='silhouette', max_domains=8, 
                           sigma_factor=1.0):
-    """
-    Estimate the number of domains in a protein structure
-    
-    Parameters:
-    -----------
-    distance_matrix : np.ndarray
-        Pairwise distance matrix (N x N)
-    method : str
-        Estimation method: 'silhouette', 'eigengap', or 'consensus'
-    max_domains : int
-        Maximum number of domains to consider (default: 8)
-    sigma_factor : float
-        Scaling factor for RBF kernel sigma (default: 1.0)
-    
-    Returns:
-    --------
-    n_domains : int
-        Estimated number of domains
-    scores : list
-        List of (k, score) tuples for all tested values
-    """
     
     # Compute similarity matrix using RBF kernel
     sigma = np.median(distance_matrix[distance_matrix > 0]) * sigma_factor
@@ -70,7 +36,7 @@ def estimate_domain_count(distance_matrix, method='silhouette', max_domains=8,
 
 
 def _estimate_silhouette(distance_matrix, similarity, max_k):
-    """Silhouette score method (recommended)"""
+    """Silhouette score method"""
     
     best_k = 2
     best_score = -1
@@ -132,29 +98,8 @@ def _estimate_consensus(distance_matrix, similarity, max_k):
     return best_k, []
 
 
-# =============================================================================
-# STAGE 2: SPECTRAL CLUSTERING
-# =============================================================================
-
 def apply_spectral_clustering(distance_matrix, n_domains, sigma_factor=1.0):
-    """
-    Apply spectral clustering with specified number of clusters
-    
-    Parameters:
-    -----------
-    distance_matrix : np.ndarray
-        Pairwise distance matrix
-    n_domains : int
-        Number of clusters/domains
-    sigma_factor : float
-        Scaling factor for RBF kernel sigma
-    
-    Returns:
-    --------
-    labels : np.ndarray
-        Cluster assignments for each residue
-    """
-    
+   
     # Compute similarity matrix
     sigma = np.median(distance_matrix[distance_matrix > 0]) * sigma_factor
     similarity = np.exp(-distance_matrix**2 / (2 * sigma**2))
@@ -172,38 +117,9 @@ def apply_spectral_clustering(distance_matrix, n_domains, sigma_factor=1.0):
     return labels
 
 
-# =============================================================================
-# TWO-STAGE PIPELINE
-# =============================================================================
-
 def two_stage_spectral(distance_matrix, estimation_method='silhouette',
                        max_domains=8, sigma_factor=1.0, verbose=False):
-    """
-    Complete two-stage spectral clustering pipeline
-    
-    Parameters:
-    -----------
-    distance_matrix : np.ndarray
-        Pairwise distance matrix
-    estimation_method : str
-        Method for estimating domain count
-    max_domains : int
-        Maximum domains to consider
-    sigma_factor : float
-        RBF kernel scaling factor
-    verbose : bool
-        Print intermediate results
-    
-    Returns:
-    --------
-    labels : np.ndarray
-        Cluster assignments
-    n_estimated : int
-        Estimated number of domains
-    scores : list
-        Estimation scores (if applicable)
-    """
-    
+   
     # Stage 1: Estimate domain count
     n_estimated, scores = estimate_domain_count(
         distance_matrix,
@@ -233,37 +149,8 @@ def two_stage_spectral(distance_matrix, estimation_method='silhouette',
     return labels, n_estimated, scores
 
 
-# =============================================================================
-# PROCESS SINGLE PROTEIN
-# =============================================================================
-
 def process_protein(pdb_id, chain_id, parser, estimation_method='silhouette',
                    max_domains=8, sigma_factor=1.0, verbose=False):
-    """
-    Apply two-stage spectral clustering to a single protein
-    
-    Parameters:
-    -----------
-    pdb_id : str
-        PDB identifier
-    chain_id : str
-        Chain identifier
-    parser : ProteinStructureParser
-        Structure parser instance
-    estimation_method : str
-        Domain count estimation method
-    max_domains : int
-        Maximum domains to consider
-    sigma_factor : float
-        RBF kernel scaling
-    verbose : bool
-        Print details
-    
-    Returns:
-    --------
-    results : dict
-        Results dictionary with labels, domain count, etc.
-    """
     
     try:
         # Parse structure
@@ -307,36 +194,10 @@ def process_protein(pdb_id, chain_id, parser, estimation_method='silhouette',
         }
 
 
-# =============================================================================
-# BATCH PROCESSING
-# =============================================================================
-
 def process_dataset(csv_file, output_dir='data/results', 
                    estimation_method='silhouette', max_domains=8,
                    sigma_factor=1.0, save_labels=True):
-    """
-    Apply two-stage spectral clustering to entire dataset
-    
-    Parameters:
-    -----------
-    csv_file : str
-        Path to CSV with protein list
-    output_dir : str
-        Directory for output files
-    estimation_method : str
-        Domain count estimation method
-    max_domains : int
-        Maximum domains to consider
-    sigma_factor : float
-        RBF kernel scaling
-    save_labels : bool
-        Save cluster labels to files
-    
-    Returns:
-    --------
-    results_df : pd.DataFrame
-        Results for all proteins
-    """
+
     
     # Load dataset
     df = pd.read_csv(csv_file)
@@ -352,9 +213,7 @@ def process_dataset(csv_file, output_dir='data/results',
         labels_dir = output_path / 'two_stage_labels'
         labels_dir.mkdir(exist_ok=True)
     
-    print("="*70)
-    print("TWO-STAGE SPECTRAL CLUSTERING")
-    print("="*70)
+    print("Two Stage Spectral Clustering")
     print(f"Dataset: {len(df)} proteins")
     print(f"Estimation method: {estimation_method}")
     print(f"Max domains: {max_domains}")
@@ -418,10 +277,7 @@ def process_dataset(csv_file, output_dir='data/results',
     results_file = output_path / f'two_stage_{estimation_method}.csv'
     results_df.to_csv(results_file, index=False)
     
-    # Print summary
-    print("\n" + "="*70)
-    print("SUMMARY")
-    print("="*70)
+  
     
     successful = results_df[results_df['success']]
     failed = results_df[~results_df['success']]
@@ -454,11 +310,6 @@ def process_dataset(csv_file, output_dir='data/results',
         print(f"Labels saved to: {labels_dir}/")
     
     return results_df
-
-
-# =============================================================================
-# COMMAND LINE INTERFACE
-# =============================================================================
 
 def main():
     import argparse
@@ -533,9 +384,6 @@ def main():
         )
         
         if result['success']:
-            print(f"\n{'='*70}")
-            print("RESULTS")
-            print("="*70)
             print(f"Protein: {result['pdb_chain']}")
             print(f"Residues: {result['n_residues']}")
             print(f"Estimated domains: {result['n_domains_estimated']}")

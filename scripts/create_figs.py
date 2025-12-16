@@ -1,39 +1,28 @@
-"""
-Generate all figures for presentation and paper
-
-Methods compared:
-1. Louvain (unsupervised)
-2. Spectral-Graph (supervised - oracle n_domains)
-3. Two-Stage-Spectral (unsupervised)
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 
-# Create figures directory
 figures_dir = Path('data/results/figures')
 figures_dir.mkdir(parents=True, exist_ok=True)
 
-# Set style
 sns.set_style("whitegrid")
 sns.set_palette("Set2")
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 plt.rcParams['font.size'] = 11
 
-# Load data
 method_comp = pd.read_csv('data/results/method_comparison.csv')
 random_ctrl = pd.read_csv('data/results/random_controls.csv')
 hyperparam = pd.read_csv('data/results/hyperparameter_grid_search.csv')
 
 successful = method_comp[method_comp['success'] == True]
 
-# =============================================================================
+
+
+####
 # FIGURE 1: Method Comparison Summary
-# =============================================================================
 
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(14, 10))
 
@@ -99,11 +88,12 @@ plt.tight_layout()
 plt.savefig(figures_dir / 'fig1_comprehensive_comparison.png', bbox_inches='tight')
 plt.close()
 
-print("✓ Figure 1: Comprehensive Method Comparison")
+print("Figure 1: Comprehensive Method Comparison")
 
-# =============================================================================
+
+####
 # FIGURE 2: Oracle vs No-Oracle Comparison
-# =============================================================================
+
 
 fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -156,11 +146,10 @@ plt.tight_layout()
 plt.savefig(figures_dir / 'fig2_oracle_comparison.png', bbox_inches='tight')
 plt.close()
 
-print("✓ Figure 2: Oracle Knowledge Analysis")
+print("Figure 2: Oracle Knowledge Analysis")
 
-# =============================================================================
+####
 # FIGURE 3: Hyperparameter Optimization Heatmap
-# =============================================================================
 
 # Create heatmap showing sigma_factor vs max_domains for silhouette method
 silhouette_results = hyperparam[hyperparam['estimation_method'] == 'silhouette']
@@ -185,11 +174,10 @@ plt.tight_layout()
 plt.savefig(figures_dir / 'fig3_hyperparameter_heatmap.png', bbox_inches='tight')
 plt.close()
 
-print("✓ Figure 3: Hyperparameter Optimization Heatmap")
+print("Figure 3: Hyperparameter Optimization Heatmap")
 
-# =============================================================================
+####
 # FIGURE 4: Performance by Domain Count
-# =============================================================================
 
 two_stage_only = successful[successful['method'] == 'Two-Stage-Spectral']
 
@@ -233,11 +221,7 @@ plt.tight_layout()
 plt.savefig(figures_dir / 'fig4_performance_by_complexity.png', bbox_inches='tight')
 plt.close()
 
-print("✓ Figure 4: Performance by Domain Count")
-
-# =============================================================================
-# FIGURE 5: Workflow Diagram (Conceptual)
-# =============================================================================
+print("Figure 4: Performance by Domain Count")
 
 fig, ax = plt.subplots(figsize=(12, 8))
 ax.axis('off')
@@ -285,12 +269,6 @@ plt.tight_layout()
 plt.savefig(figures_dir / 'fig5_workflow_diagram.png', bbox_inches='tight')
 plt.close()
 
-print("✓ Figure 5: Workflow Diagram")
+print("Figure 5: Workflow Diagram")
 
 print(f"\nAll figures saved to: {figures_dir}/")
-print("\nGenerated figures:")
-print("  1. fig1_comprehensive_comparison.png - 4-panel method comparison")
-print("  2. fig2_oracle_comparison.png - Oracle knowledge analysis")
-print("  3. fig3_hyperparameter_heatmap.png - Optimization results")
-print("  4. fig4_performance_by_complexity.png - Accuracy vs domain count")
-print("  5. fig5_workflow_diagram.png - Project workflow")

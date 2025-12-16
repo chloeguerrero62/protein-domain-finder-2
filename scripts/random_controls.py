@@ -1,21 +1,3 @@
-"""
-Random Controls and Ablation Studies
-
-This script implements baseline comparisons and ablation studies to validate
-that our methods perform significantly better than random chance.
-
-Random Controls:
-1. Random assignment (oracle n_domains)
-2. Length-based splitting (oracle n_domains)
-3. Single-domain baseline (predict n=1 for all)
-4. Mean-domains baseline (predict n=2.5 for all)
-
-Ablation Studies:
-1. Graph construction (k-NN vs threshold)
-2. Distance metrics (Euclidean only, but documented)
-3. Similarity kernels (RBF vs inverse distance)
-"""
-
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -31,22 +13,11 @@ from src.features.graph_builder import build_knn_graph
 from src.evaluation.metrics import compute_all_metrics
 
 
-# =============================================================================
-# RANDOM CONTROLS
-# =============================================================================
-
 def random_assignment_control(n_residues, n_domains, n_trials=10):
-    """
-    Random baseline: Assign residues randomly to n_domains clusters
-    
-    Note: Uses ORACLE knowledge of true n_domains
-    Expected: Terrible cluster quality despite correct count
-    """
     errors = []
     
     for _ in range(n_trials):
         labels = np.random.randint(0, n_domains, size=n_residues)
-        # Always predicts correct n (by design)
         error = 0
         errors.append(error)
     
@@ -58,12 +29,7 @@ def random_assignment_control(n_residues, n_domains, n_trials=10):
 
 
 def length_based_control(n_residues, n_domains):
-    """
-    Length-based baseline: Split sequence into n equal parts
-    
-    Note: Uses ORACLE knowledge of true n_domains
-    Expected: Arbitrary boundaries, no structural meaning
-    """
+
     labels = np.zeros(n_residues, dtype=int)
     chunk_size = n_residues // n_domains
     
@@ -81,22 +47,15 @@ def length_based_control(n_residues, n_domains):
 
 
 def naive_baselines(n_domains):
-    """
-    Naive prediction baselines (no oracle)
-    
-    1. Predict n=1 for all proteins (single domain)
-    2. Predict n=2.5 (dataset mean) for all proteins
-    """
+
     baselines = []
     
-    # Single domain prediction
     baselines.append({
         'method': 'Predict-One',
         'n_predicted': 1,
         'error': abs(1 - n_domains)
     })
     
-    # Mean prediction (round to nearest int)
     mean_domains = 2.5  # Approximate dataset mean
     baselines.append({
         'method': 'Predict-Mean',
@@ -107,17 +66,7 @@ def naive_baselines(n_domains):
     return baselines
 
 
-# =============================================================================
-# ABLATION STUDIES
-# =============================================================================
-
 def ablation_graph_construction(distance_matrix):
-    """
-    Test different graph construction methods
-    
-    1. k-NN with varying k
-    2. Threshold-based with varying threshold
-    """
     from src.models.louvain_clustering import louvain_clustering
     
     results = []
@@ -137,7 +86,6 @@ def ablation_graph_construction(distance_matrix):
             'graph_density': len(G.edges()) / (len(G.nodes()) * (len(G.nodes()) - 1) / 2)
         })
     
-    # Threshold ablation
     from src.features.graph_builder import build_threshold_graph
     
     for threshold in [6.0, 8.0, 10.0]:
@@ -158,13 +106,6 @@ def ablation_graph_construction(distance_matrix):
 
 
 def ablation_similarity_kernel(distance_matrix, n_domains):
-    """
-    Test different similarity kernels for spectral clustering
-    
-    1. RBF (Gaussian): exp(-d²/2σ²)
-    2. Inverse distance: 1/(d+ε)
-    3. Exponential: exp(-d/σ)
-    """
     from sklearn.cluster import SpectralClustering
     
     results = []
@@ -197,7 +138,6 @@ def ablation_similarity_kernel(distance_matrix, n_domains):
         'labels': labels_inv
     })
     
-    # Exponential
     similarity_exp = np.exp(-distance_matrix / sigma)
     
     clustering = SpectralClustering(n_clusters=n_domains, affinity='precomputed', random_state=42)
@@ -212,18 +152,9 @@ def ablation_similarity_kernel(distance_matrix, n_domains):
     
     return results
 
-
-# =============================================================================
-# MAIN EXECUTION
-# =============================================================================
-
 def run_all_controls(df, parser):
-    """
-    Run all random controls on dataset
-    """
-    print("="*70)
-    print("RANDOM CONTROLS")
-    print("="*70)
+
+    print("Random Controls")
     
     all_results = []
     
@@ -234,7 +165,6 @@ def run_all_controls(df, parser):
             n_true = row['n_domains']
             pdb_chain = f"{row['pdb_id']}_{row['chain']}"
             
-            # Random assignment (oracle)
             random_result = random_assignment_control(n_residues, n_true, n_trials=10)
             all_results.append({
                 'pdb_chain': pdb_chain,
@@ -242,11 +172,10 @@ def run_all_controls(df, parser):
                 'n_predicted': random_result['n_predicted'],
                 'n_true': n_true,
                 'absolute_error': random_result['mean_error'],
-                'exact_match': 1,  # By design
+                'exact_match': 1, 
                 'note': 'Oracle n_domains, random labels'
             })
             
-            # Length-based (oracle)
             length_result = length_based_control(n_residues, n_true)
             all_results.append({
                 'pdb_chain': pdb_chain,
@@ -258,7 +187,6 @@ def run_all_controls(df, parser):
                 'note': 'Oracle n_domains, equal-length splits'
             })
             
-            # Naive baselines (no oracle)
             for baseline in naive_baselines(n_true):
                 all_results.append({
                     'pdb_chain': pdb_chain,
@@ -277,12 +205,6 @@ def run_all_controls(df, parser):
 
 
 def run_ablation_studies(df, parser, n_proteins=20):
-    """
-    Run ablation studies on subset of proteins
-    """
-    print("\n" + "="*70)
-    print("ABLATION STUDIES")
-    print("="*70)
     
     # Sample diverse proteins
     df_sample = df.sample(n=min(n_proteins, len(df)), random_state=42)
@@ -327,11 +249,7 @@ def main():
     controls_df = run_all_controls(df, parser)
     controls_df.to_csv(output_dir / 'random_controls.csv', index=False)
     
-    # Print summary
-    print("\n" + "="*70)
-    print("RANDOM CONTROLS SUMMARY")
-    print("="*70)
-    
+    # Print control summaries
     for method in controls_df['method'].unique():
         method_df = controls_df[controls_df['method'] == method]
         exact = (method_df['exact_match'] == 1).sum()
@@ -350,9 +268,6 @@ def main():
     kernel_ablation.to_csv(output_dir / 'ablation_similarity_kernel.csv', index=False)
     
     # Print ablation summaries
-    print("\n" + "="*70)
-    print("GRAPH CONSTRUCTION ABLATION")
-    print("="*70)
     
     graph_summary = graph_ablation.groupby('method').agg({
         'error': 'mean',
@@ -361,15 +276,11 @@ def main():
     }).round(3)
     print("\n", graph_summary)
     
-    print("\n" + "="*70)
-    print("SIMILARITY KERNEL ABLATION")
-    print("="*70)
+    print("\nSimilarity Kernel Ablation Results:")
     print("(All use oracle n_domains, supervised)")
     print(f"Tested on {len(kernel_ablation['pdb_chain'].unique())} proteins")
     
-    print("\n" + "="*70)
-    print("FILES SAVED")
-    print("="*70)
+
     print(f"Random controls: {output_dir / 'random_controls.csv'}")
     print(f"Graph ablation: {output_dir / 'ablation_graph_construction.csv'}")
     print(f"Kernel ablation: {output_dir / 'ablation_similarity_kernel.csv'}")

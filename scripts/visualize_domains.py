@@ -1,13 +1,3 @@
-"""
-Visualize domain assignments for multiple clustering methods
-
-This script creates comparison visualizations showing:
-1. Louvain clustering results
-2. Two-Stage Spectral clustering results
-3. Ground truth (Pfam domains)
-4. Side-by-side comparisons
-"""
-
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -21,7 +11,6 @@ import pickle
 
 
 def load_ground_truth(pdb_chain):
-    """Load ground truth domain count from CSV"""
     csv_file = Path('data/pdb_clustering/selected_proteins_mmseqs2.csv')
     if not csv_file.exists():
         return None
@@ -38,11 +27,6 @@ def load_ground_truth(pdb_chain):
 
 
 def load_clustering_results(pdb_chain):
-    """
-    Load clustering results from all methods
-    
-    Returns dict with keys: 'louvain', 'two_stage', 'n_true'
-    """
     results = {'n_true': load_ground_truth(pdb_chain)}
     
     # Load Louvain results
@@ -87,9 +71,6 @@ def visualize_single_method(ax, labels, method_name, n_true=None):
 
 
 def visualize_comparison(pdb_chain, output_dir='data/visualizations'):
-    """
-    Create comprehensive comparison visualization for a protein
-    """
     
     # Load all results
     results = load_clustering_results(pdb_chain)
@@ -163,15 +144,6 @@ def visualize_comparison(pdb_chain, output_dir='data/visualizations'):
 
 
 def visualize_method_only(pdb_chain, method='louvain', output_dir='data/visualizations'):
-    """
-    Visualize results from a single method
-    
-    Parameters:
-    -----------
-    method : str
-        'louvain' or 'two_stage'
-    """
-    
     n_true = load_ground_truth(pdb_chain)
     
     # Load labels
@@ -219,9 +191,8 @@ def visualize_method_only(pdb_chain, method='louvain', output_dir='data/visualiz
 
 def create_summary_figure(pdb_chains, output_dir='data/visualizations'):
     """
-    Create a summary figure showing multiple proteins side-by-side
-    
-    Shows both Louvain and Two-Stage predictions for each protein
+    Create a summary figure showing multiple proteins side-by-side;
+    shows both Louvain and Two-Stage predictions for each protein
     """
     
     n_proteins = len(pdb_chains)

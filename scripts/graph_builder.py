@@ -19,7 +19,7 @@ output_dir.mkdir(parents=True, exist_ok=True)
 dm_dir = Path('data/distance_matrices')
 
 for dm_file in dm_dir.glob('*_distmat.npy'):
-    print(f"Processing {dm_file.stem}...")
+    print(f"Processing {dm_file.stem}")
     
     # Load distance matrix
     D = np.load(dm_file)
@@ -32,4 +32,4 @@ for dm_file in dm_dir.glob('*_distmat.npy'):
     with open(output_file, 'wb') as f:
         pickle.dump(G, f)
     
-    print(f"  ✓ Saved graph with {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
+    print(f"Saved graph with {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")

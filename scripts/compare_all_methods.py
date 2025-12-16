@@ -1,12 +1,3 @@
-"""
-Comprehensive comparison of clustering methods for protein domain detection
-
-Methods compared:
-1. Louvain (unsupervised) - discovers domain count automatically
-2. Spectral-Graph (supervised) - requires oracle knowledge of true domain count
-3. Two-Stage-Spectral (unsupervised) - estimates domain count via silhouette score
-"""
-
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -27,7 +18,6 @@ from src.evaluation.metrics import compute_all_metrics
 
 
 def process_protein_all_methods(row, parser):
-    """Apply all three clustering methods to one protein"""
     
     pdb_id = row['pdb_id']
     chain_id = row['chain']
@@ -62,7 +52,6 @@ def process_protein_all_methods(row, parser):
         metrics['n_estimated'] = n_estimated
         methods_results.append(metrics)
         
-        # Add common info to all results
         for m in methods_results:
             m['pdb_chain'] = f"{pdb_id}_{chain_id}"
             m['n_residues'] = len(coords)
@@ -82,10 +71,7 @@ def process_protein_all_methods(row, parser):
 def main():
     df = pd.read_csv('data/pdb_clustering/selected_proteins_mmseqs2.csv')
     parser = ProteinStructureParser()
-    
-    print("="*70)
-    print("COMPARING CLUSTERING METHODS")
-    print("="*70)
+
     print("\nMethods:")
     print("  1. Louvain (unsupervised)")
     print("  2. Spectral-Graph (supervised - oracle n_domains)")
@@ -99,11 +85,7 @@ def main():
         all_results.extend(results)
     
     results_df = pd.DataFrame(all_results)
-    
-    # Summary by method
-    print("\n" + "="*70)
-    print("SUMMARY BY METHOD")
-    print("="*70)
+
     
     successful = results_df[results_df['success']].copy()
     
@@ -132,10 +114,7 @@ def main():
         'n_predicted': 'mean'
     }).round(2)
     summary.to_csv('data/results/method_summary.csv')
-    
-    print(f"\n" + "="*70)
-    print("FILES SAVED")
-    print("="*70)
+  
     print(f"Detailed results: data/results/method_comparison.csv")
     print(f"Summary table: data/results/method_summary.csv")
 

@@ -1,14 +1,9 @@
-"""
-Download PDB files for selected proteins
-"""
 
 import pandas as pd
 from Bio.PDB import PDBList
 
 def download_selected_structures(csv_file, output_dir="data/selected_structures"):
-    """
-    Download PDB structures for selected proteins
-    """
+
     import os
     os.makedirs(output_dir, exist_ok=True)
     
