@@ -1,5 +1,10 @@
 """
-Comprehensive comparison of all clustering methods
+Comprehensive comparison of clustering methods for protein domain detection
+
+Methods compared:
+1. Louvain (unsupervised) - discovers domain count automatically
+2. Spectral-Graph (supervised) - requires oracle knowledge of true domain count
+3. Two-Stage-Spectral (unsupervised) - estimates domain count via silhouette score
 """
 
 from pathlib import Path
@@ -15,16 +20,14 @@ from src.features.distance_matrix import compute_distance_matrix
 from src.features.graph_builder import build_knn_graph
 from src.evaluation.clustering_comparison import (
     apply_louvain,
-    apply_spectral_distance,
     apply_spectral_graph,
-    apply_hierarchical,
     apply_two_stage_spectral
 )
 from src.evaluation.metrics import compute_all_metrics
 
 
 def process_protein_all_methods(row, parser):
-    """Apply all clustering methods to one protein"""
+    """Apply all three clustering methods to one protein"""
     
     pdb_id = row['pdb_id']
     chain_id = row['chain']
@@ -44,28 +47,14 @@ def process_protein_all_methods(row, parser):
         metrics['supervised'] = False
         methods_results.append(metrics)
         
-        # Method 2: Spectral on distance matrix (supervised)
-        labels = apply_spectral_distance(D, n_true)
-        metrics = compute_all_metrics(labels, None, n_true)
-        metrics['method'] = 'Spectral-Distance'
-        metrics['supervised'] = True
-        methods_results.append(metrics)
-        
-        # Method 3: Spectral on graph (supervised)
+        # Method 2: Spectral on graph (supervised - uses oracle n_domains)
         labels = apply_spectral_graph(G, n_true)
         metrics = compute_all_metrics(labels, None, n_true)
         metrics['method'] = 'Spectral-Graph'
         metrics['supervised'] = True
         methods_results.append(metrics)
         
-        # Method 4: Hierarchical (supervised)
-        labels = apply_hierarchical(D, n_true)
-        metrics = compute_all_metrics(labels, None, n_true)
-        metrics['method'] = 'Hierarchical'
-        metrics['supervised'] = True
-        methods_results.append(metrics)
-        
-        # Method 5: Two-stage spectral (unsupervised)
+        # Method 3: Two-stage spectral (unsupervised)
         labels, n_estimated = apply_two_stage_spectral(D, G)
         metrics = compute_all_metrics(labels, None, n_true)
         metrics['method'] = 'Two-Stage-Spectral'
@@ -73,7 +62,7 @@ def process_protein_all_methods(row, parser):
         metrics['n_estimated'] = n_estimated
         methods_results.append(metrics)
         
-        # Add common info
+        # Add common info to all results
         for m in methods_results:
             m['pdb_chain'] = f"{pdb_id}_{chain_id}"
             m['n_residues'] = len(coords)
@@ -94,7 +83,14 @@ def main():
     df = pd.read_csv('data/pdb_clustering/selected_proteins_mmseqs2.csv')
     parser = ProteinStructureParser()
     
-    print("Comparing all clustering methods on all proteins\n")
+    print("="*70)
+    print("COMPARING CLUSTERING METHODS")
+    print("="*70)
+    print("\nMethods:")
+    print("  1. Louvain (unsupervised)")
+    print("  2. Spectral-Graph (supervised - oracle n_domains)")
+    print("  3. Two-Stage-Spectral (unsupervised)")
+    print(f"\nDataset: {len(df)} proteins\n")
     
     all_results = []
     
@@ -111,18 +107,19 @@ def main():
     
     successful = results_df[results_df['success']].copy()
     
-    for method in successful['method'].unique():
+    for method in ['Louvain', 'Spectral-Graph', 'Two-Stage-Spectral']:
         method_df = successful[successful['method'] == method]
+        if len(method_df) == 0:
+            continue
+            
         exact = (method_df['exact_match'] == 1).sum()
         mae = method_df['absolute_error'].mean()
+        supervised = method_df['supervised'].iloc[0]
         
-        print(f"\n{method}:")
+        print(f"\n{method} ({'supervised' if supervised else 'unsupervised'}):")
         print(f"  Exact matches: {exact}/{len(method_df)} ({100*exact/len(method_df):.1f}%)")
         print(f"  Mean Absolute Error: {mae:.2f}")
-        
-        if 'ari' in method_df.columns and method_df['ari'].notna().any():
-            print(f"  Mean ARI: {method_df['ari'].mean():.3f}")
-            print(f"  Mean NMI: {method_df['nmi'].mean():.3f}")
+        print(f"  Mean predicted domains: {method_df['n_predicted'].mean():.2f}")
     
     # Save results
     Path('data/results').mkdir(parents=True, exist_ok=True)
@@ -136,7 +133,10 @@ def main():
     }).round(2)
     summary.to_csv('data/results/method_summary.csv')
     
-    print(f"\nDetailed results: data/results/method_comparison.csv")
+    print(f"\n" + "="*70)
+    print("FILES SAVED")
+    print("="*70)
+    print(f"Detailed results: data/results/method_comparison.csv")
     print(f"Summary table: data/results/method_summary.csv")
 
 

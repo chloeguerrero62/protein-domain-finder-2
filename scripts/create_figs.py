@@ -1,5 +1,10 @@
 """
 Generate all figures for presentation and paper
+
+Methods compared:
+1. Louvain (unsupervised)
+2. Spectral-Graph (supervised - oracle n_domains)
+3. Two-Stage-Spectral (unsupervised)
 """
 
 import pandas as pd
@@ -38,8 +43,16 @@ exact_rates = successful.groupby('method')['exact_match'].apply(
 ).reset_index()
 exact_rates.columns = ['Method', 'Exact Match (%)']
 
-colors = ['#d62728' if 'Louvain' in m else '#2ca02c' if 'Two-Stage' in m else '#1f77b4'
-          for m in exact_rates['Method']]
+# Color mapping for the three methods
+def get_color(method):
+    if 'Louvain' in method:
+        return '#d62728'  # red - poor performance
+    elif 'Two-Stage' in method:
+        return '#2ca02c'  # green - good unsupervised
+    else:  # Spectral-Graph
+        return '#1f77b4'  # blue - supervised baseline
+
+colors = [get_color(m) for m in exact_rates['Method']]
 ax1.barh(exact_rates['Method'], exact_rates['Exact Match (%)'], color=colors, alpha=0.7)
 ax1.set_xlabel('Exact Match Rate (%)')
 ax1.set_title('A) Domain Count Accuracy', fontweight='bold')
@@ -49,15 +62,14 @@ ax1.set_xlim(0, 105)
 mae = successful.groupby('method')['absolute_error'].mean().reset_index()
 mae.columns = ['Method', 'MAE']
 
-colors = ['#d62728' if 'Louvain' in m else '#2ca02c' if 'Two-Stage' in m else '#1f77b4'
-          for m in mae['Method']]
+colors = [get_color(m) for m in mae['Method']]
 ax2.barh(mae['Method'], mae['MAE'], color=colors, alpha=0.7)
 ax2.set_xlabel('Mean Absolute Error (domains)')
 ax2.set_title('B) Average Prediction Error', fontweight='bold')
 ax2.axvline(x=1.0, color='gray', linestyle='--', alpha=0.5)
 
-# Panel C: Error Distribution
-methods_subset = ['Louvain', 'Two-Stage-Spectral', 'Spectral-Distance', 'Hierarchical']
+# Panel C: Error Distribution (all three methods)
+methods_subset = ['Louvain', 'Two-Stage-Spectral', 'Spectral-Graph']
 data_subset = successful[successful['method'].isin(methods_subset)]
 sns.violinplot(data=data_subset, y='method', x='absolute_error', ax=ax3, orient='h')
 ax3.set_xlabel('Absolute Error (domains)')
@@ -69,7 +81,7 @@ supervised = successful[successful['supervised'] == True]
 unsupervised = successful[successful['supervised'] == False]
 
 method_type_mae = pd.DataFrame({
-    'Type': ['Supervised\n(oracle)', 'Unsupervised\n(Two-Stage)', 'Unsupervised\n(Louvain)'],
+    'Type': ['Supervised\n(Spectral-Graph)', 'Unsupervised\n(Two-Stage)', 'Unsupervised\n(Louvain)'],
     'MAE': [
         supervised['absolute_error'].mean(),
         unsupervised[unsupervised['method'] == 'Two-Stage-Spectral']['absolute_error'].mean(),
@@ -104,11 +116,6 @@ two_stage['category'] = 'Two-Stage\n(No Oracle)'
 
 louvain = successful[successful['method'] == 'Louvain'].copy()
 louvain['category'] = 'Louvain\n(No Oracle)'
-
-# Get random controls
-random_oracle = random_ctrl[random_ctrl['method'] == 'Random-Oracle']
-random_oracle = random_oracle.copy()
-random_oracle['category'] = 'Random\n(Oracle)'
 
 # Combine
 combined = pd.concat([
@@ -232,8 +239,6 @@ print("✓ Figure 4: Performance by Domain Count")
 # FIGURE 5: Workflow Diagram (Conceptual)
 # =============================================================================
 
-# This would be better created in PowerPoint/Keynote, but here's a simple version
-
 fig, ax = plt.subplots(figsize=(12, 8))
 ax.axis('off')
 
@@ -242,7 +247,7 @@ boxes = [
     ("PDB Sequences\n(864K)", 0.5, 0.9),
     ("Pre-filter\n(Length, Resolution)", 0.5, 0.75),
     ("MMseqs2 Cluster\n(30% identity)", 0.5, 0.6),
-    ("Select Diverse Set\n(144 proteins)", 0.5, 0.45),
+    ("Select Diverse Set\n(75 proteins)", 0.5, 0.45),
     ("Distance Matrices", 0.2, 0.25),
     ("k-NN Graphs", 0.5, 0.25),
     ("Two-Stage Spectral", 0.8, 0.25),

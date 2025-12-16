@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import numpy as np
 import pandas as pd
+np.random.seed(42)
 from tqdm import tqdm
 
 from src.features.structure_parser import ProteinStructureParser
