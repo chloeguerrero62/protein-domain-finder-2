@@ -130,20 +130,4 @@ If you want to use or display any figure, check `data/results/figures/`.
 - **Visualization Issues:**  
   All images/tables are auto-displayed inline, but figures can also be opened from the file system.
 
----
 
-## Citation
-
-If you use this pipeline, please cite the original paper/preprint:
-
-> _[Add BibTeX or citation entry here]_
-
----
-
-## Author
-
-Chloe Guerrero et al., 2025
-
----
-
-For questions or to report a bug, please open an issue or contact the project maintainer.
