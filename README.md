@@ -118,16 +118,5 @@ The pipeline can be regenerated from scratch by running the main notebook:
 
 If you want to use or display any figure, check `data/results/figures/`.
 
----
-
-## Troubleshooting
-
-- **Missing Packages:**  
-  Run `pip install -r requirements.txt` or `conda env create -f environment.yml`.
-- **File Not Found Errors:**  
-  - Ensure you have run all previous cells/scripts in order.
-  - Ensure `data/pdb_clustering/selected_proteins_mmseqs2.csv` is present for sample analysis.
-- **Visualization Issues:**  
-  All images/tables are auto-displayed inline, but figures can also be opened from the file system.
 
 
